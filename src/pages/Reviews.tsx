@@ -49,11 +49,9 @@ const Reviews = () => {
   const loadReviews = async () => {
     setLoading(true);
     try {
+      // Use the secure function that excludes email addresses at the database level
       const { data, error } = await supabase
-        .from('reviews')
-        .select('id, customer_name, rating, review_text, created_at') // Exclude email for security
-        .eq('is_published', true)
-        .order('created_at', { ascending: false });
+        .rpc('get_public_reviews');
 
       if (error) throw error;
       setReviews(data || []);

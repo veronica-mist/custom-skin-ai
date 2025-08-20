@@ -127,7 +127,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_reviews: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          customer_name: string
+          id: string
+          rating: number
+          review_text: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
