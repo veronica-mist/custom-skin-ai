@@ -11,10 +11,10 @@ import type { User } from '@supabase/supabase-js';
 interface Review {
   id: string;
   customer_name: string;
-  email: string;
   rating: number;
   review_text: string;
   created_at: string;
+  // Note: email is excluded for public reviews for security reasons
 }
 
 const Reviews = () => {
@@ -51,7 +51,7 @@ const Reviews = () => {
     try {
       const { data, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select('id, customer_name, rating, review_text, created_at') // Exclude email for security
         .eq('is_published', true)
         .order('created_at', { ascending: false });
 
@@ -286,7 +286,7 @@ const Reviews = () => {
                             {review.customer_name}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            {review.email}
+                            Verified Customer
                           </p>
                         </div>
                         {renderStars(review.rating)}
