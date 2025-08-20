@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Card } from '@/components/ui/card';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useAuthUser } from '@/components/auth/AuthGuard';
 import CheckoutFlow from '@/components/checkout/CheckoutFlow';
 
 const CartSidebar = () => {
@@ -18,7 +19,17 @@ const CartSidebar = () => {
     setIsCartOpen 
   } = useCart();
   
+  const { user } = useAuthUser();
   const [showCheckout, setShowCheckout] = useState(false);
+
+  const handleCheckout = () => {
+    if (!user) {
+      // Redirect to auth page if not logged in
+      window.location.href = '/auth';
+      return;
+    }
+    setShowCheckout(true);
+  };
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -125,7 +136,7 @@ const CartSidebar = () => {
                 variant="hero" 
                 size="lg" 
                 className="w-full"
-                onClick={() => setShowCheckout(true)}
+                onClick={handleCheckout}
               >
                 Proceed to Checkout
               </Button>

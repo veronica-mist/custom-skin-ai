@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { ShoppingCart, Package, Truck, CreditCard, Building2, Clock, CheckCircle, Star, Upload, Camera } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import { useAuthUser } from '@/components/auth/AuthGuard';
 import shopBg from '@/assets/shop-bg.jpg';
 import foundationBottles from '@/assets/foundation-bottles.jpg';
 
@@ -13,6 +14,7 @@ const Shop = () => {
   const location = useLocation();
   const scanResult = location.state?.scanResult;
   const { addItem } = useCart();
+  const { user } = useAuthUser();
   
   const [selectedFinish, setSelectedFinish] = useState('matte');
   const [selectedCoverage, setSelectedCoverage] = useState('medium');
@@ -51,6 +53,12 @@ const Shop = () => {
   };
 
   const handleOrderNow = () => {
+    if (!user) {
+      toast.error('Please sign in to add items to cart');
+      window.location.href = '/auth';
+      return;
+    }
+
     // Add to cart instead of going to delivery modal
     const cartItem = {
       productName: 'Custom Foundation',

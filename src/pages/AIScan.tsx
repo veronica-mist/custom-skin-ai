@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Camera, Upload, Scan, Brain, CheckCircle, ArrowRight, RotateCcw } from 'lucide-react';
 import { analyzeImage } from '@/utils/imageAnalysis';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 import aiScanBg from '@/assets/ai-scan-bg.jpg';
 
 const AIScan = () => {
@@ -132,6 +133,7 @@ const AIScan = () => {
   };
 
   return (
+    <AuthGuard>
     <div className="relative">
       {/* Hero Section */}
       <section 
@@ -453,6 +455,7 @@ const AIScan = () => {
         </div>
       </section>
     </div>
+    </AuthGuard>
   );
 };
 
