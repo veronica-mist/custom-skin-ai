@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Camera, Brain, Beaker, Truck, Shield, Award, ArrowRight } from 'lucide-react';
-import howItWorksBg from '@/assets/how-it-works-bg.jpg';
+import howItWorksLuxuryBg from '@/assets/how-it-works-luxury-bg.jpg';
 
 const HowItWorks = () => {
   return (
@@ -11,7 +11,7 @@ const HowItWorks = () => {
       <section 
         className="relative py-32 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${howItWorksBg})`
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${howItWorksLuxuryBg})`
         }}
       >
         <div className="container mx-auto px-4 text-center text-white">

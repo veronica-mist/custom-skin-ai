@@ -60,8 +60,19 @@ const Shop = () => {
   };
 
   const handlePayment = (method) => {
-    toast.success(`Payment initiated via ${method}. You will be redirected to complete the transaction.`);
-    // In a real app, this would redirect to the payment gateway
+    if (method === 'KBZ Bank') {
+      // Open KPay app or website
+      window.open('https://kpay.com.mm/', '_blank');
+      toast.success('Opening KPay for secure bank transfer. Complete your payment there.');
+    } else if (method === 'Yoma Bank') {
+      // Open Yoma mobile banking
+      window.open('https://yomabank.com/digital-banking', '_blank');
+      toast.success('Opening Yoma Mobile Banking. Complete your payment there.');
+    } else if (method === 'Credit Card') {
+      // Open credit card payment processor
+      window.open('https://stripe.com', '_blank');
+      toast.success('Opening secure credit card payment. Complete your transaction there.');
+    }
   };
 
   return (

@@ -2,12 +2,18 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Heart, Users, Award, Target, ArrowRight } from 'lucide-react';
+import aboutLuxuryBg from '@/assets/about-luxury-bg.jpg';
 
 const About = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="py-32 gradient-hero">
+      <section 
+        className="py-32 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${aboutLuxuryBg})`
+        }}
+      >
         <div className="container mx-auto px-4 text-center text-white">
           <div className="max-w-4xl mx-auto space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold">

@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowRight, Palette, Camera, Sparkles } from 'lucide-react';
+import blogLuxuryBg from '@/assets/blog-luxury-bg.jpg';
 
 const Blog = () => {
   const blogPosts = [
@@ -73,7 +74,12 @@ const Blog = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="py-32 gradient-hero">
+      <section 
+        className="py-32 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${blogLuxuryBg})`
+        }}
+      >
         <div className="container mx-auto px-4 text-center text-white">
           <div className="max-w-4xl mx-auto space-y-6">
             <h1 className="text-5xl md:text-6xl font-bold">
