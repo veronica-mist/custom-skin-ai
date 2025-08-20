@@ -1,182 +1,40 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Mail, Lock, User as UserIcon, Calendar, MapPin, Phone, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import type { User } from '@supabase/supabase-js';
+import { AuthForm } from '@/components/auth/AuthForm';
+import type { User, Session } from '@supabase/supabase-js';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
-
-  const [signupData, setSignupData] = useState({
-    fullName: '',
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-    dateOfBirth: '',
-    country: '',
-    phoneNumber: ''
-  });
-
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUser(user);
+    // Set up auth state listener first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
         navigate('/');
       }
     });
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    // Then check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
       if (session?.user) {
-        setUser(session.user);
         navigate('/');
-      } else {
-        setUser(null);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const validatePassword = (password: string): string[] => {
-    const errors: string[] = [];
-    if (password.length < 8) errors.push('At least 8 characters');
-    if (!/[a-z]/.test(password)) errors.push('One lowercase letter');
-    if (!/[A-Z]/.test(password)) errors.push('One uppercase letter');
-    if (!/\d/.test(password)) errors.push('One number');
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) errors.push('One special character');
-    return errors;
-  };
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!loginData.email || !loginData.password) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(loginData.email)) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: loginData.email,
-        password: loginData.password,
-      });
-
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password');
-        } else {
-          toast.error(error.message);
-        }
-      } else {
-        toast.success('Welcome back!');
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validation
-    if (!signupData.fullName || !signupData.email || !signupData.username || !signupData.password || !signupData.confirmPassword) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    if (!validateEmail(signupData.email)) {
-      toast.error('Please enter a valid email address');
-      return;
-    }
-
-    if (signupData.password !== signupData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
-    const passwordErrors = validatePassword(signupData.password);
-    if (passwordErrors.length > 0) {
-      toast.error(`Password must have: ${passwordErrors.join(', ')}`);
-      return;
-    }
-
-    if (signupData.username.length < 3) {
-      toast.error('Username must be at least 3 characters');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
-        email: signupData.email,
-        password: signupData.password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: signupData.fullName,
-            username: signupData.username,
-            date_of_birth: signupData.dateOfBirth,
-            country: signupData.country,
-            phone_number: signupData.phoneNumber
-          }
-        }
-      });
-
-      if (error) {
-        if (error.message.includes('already registered')) {
-          toast.error('An account with this email already exists');
-        } else {
-          toast.error(error.message);
-        }
-      } else {
-        toast.success('Account created! Please check your email to verify your account.');
-        setIsLogin(true);
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    if (isLogin) {
-      setLoginData(prev => ({ ...prev, [field]: value }));
-    } else {
-      setSignupData(prev => ({ ...prev, [field]: value }));
-    }
-  };
+  const toggleMode = () => setIsLogin(!isLogin);
 
   return (
     <div className="min-h-screen bg-gradient-luxury flex items-center justify-center py-12 px-4">
@@ -190,173 +48,7 @@ const Auth = () => {
           </p>
         </div>
 
-        <Card className="p-8 shadow-luxury">
-          <form onSubmit={isLogin ? handleLogin : handleSignup} className="space-y-6">
-            {!isLogin && (
-              <>
-                <div>
-                <Label htmlFor="fullName" className="flex items-center gap-2 text-primary">
-                    <UserIcon className="h-4 w-4" />
-                    Full Name *
-                  </Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={signupData.fullName}
-                    onChange={(e) => handleInputChange('fullName', e.target.value)}
-                    placeholder="Your full name"
-                    className="mt-2"
-                    required
-                  />
-                </div>
-
-                <div>
-                <Label htmlFor="username" className="flex items-center gap-2 text-primary">
-                    <UserIcon className="h-4 w-4" />
-                    Username *
-                  </Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    value={signupData.username}
-                    onChange={(e) => handleInputChange('username', e.target.value)}
-                    placeholder="Choose a unique username"
-                    className="mt-2"
-                    required
-                  />
-                </div>
-              </>
-            )}
-
-            <div>
-              <Label htmlFor="email" className="flex items-center gap-2 text-primary">
-                <Mail className="h-4 w-4" />
-                Email Address *
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={isLogin ? loginData.email : signupData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                placeholder="your.email@example.com"
-                className="mt-2"
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password" className="flex items-center gap-2 text-primary">
-                <Lock className="h-4 w-4" />
-                Password *
-              </Label>
-              <div className="relative mt-2">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={isLogin ? loginData.password : signupData.password}
-                  onChange={(e) => handleInputChange('password', e.target.value)}
-                  placeholder={isLogin ? "Enter your password" : "Min. 8 chars with uppercase, lowercase, number & symbol"}
-                  className="pr-10"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            {!isLogin && (
-              <>
-                <div>
-                  <Label htmlFor="confirmPassword" className="flex items-center gap-2 text-primary">
-                    <Lock className="h-4 w-4" />
-                    Confirm Password *
-                  </Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={signupData.confirmPassword}
-                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                    placeholder="Confirm your password"
-                    className="mt-2"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-primary">
-                      <Calendar className="h-4 w-4" />
-                      Date of Birth
-                    </Label>
-                    <Input
-                      id="dateOfBirth"
-                      type="date"
-                      value={signupData.dateOfBirth}
-                      onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="country" className="flex items-center gap-2 text-primary">
-                      <MapPin className="h-4 w-4" />
-                      Country
-                    </Label>
-                    <Input
-                      id="country"
-                      type="text"
-                      value={signupData.country}
-                      onChange={(e) => handleInputChange('country', e.target.value)}
-                      placeholder="Your country"
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-primary">
-                    <Phone className="h-4 w-4" />
-                    Phone Number
-                  </Label>
-                  <Input
-                    id="phoneNumber"
-                    type="tel"
-                    value={signupData.phoneNumber}
-                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                    placeholder="+1 (555) 123-4567"
-                    className="mt-2"
-                  />
-                </div>
-              </>
-            )}
-
-            <Button
-              type="submit"
-              variant="hero"
-              size="lg"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:text-primary-glow transition-smooth font-medium"
-            >
-              {isLogin 
-                ? "Don't have an account? Sign up" 
-                : "Already have an account? Sign in"}
-            </button>
-          </div>
-        </Card>
+        <AuthForm isLogin={isLogin} onToggleMode={toggleMode} />
       </div>
     </div>
   );
