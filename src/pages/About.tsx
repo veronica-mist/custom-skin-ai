@@ -55,9 +55,9 @@ const About = () => {
               <div className="relative">
                 <Card className="p-8 shadow-luxury gradient-luxury">
                   <img 
-                    src="/lovable-uploads/4513518d-12ca-431a-888a-4f209eec3353.png" 
-                    alt="Diverse women representing TrueTone's inclusive mission" 
-                    className="w-full rounded-lg"
+                    src="/lovable-uploads/a31be387-e3ac-42ea-8230-dd28ce6cc3a0.png" 
+                    alt="TrueTone logo - Revolutionizing inclusive beauty" 
+                    className="w-full rounded-lg max-w-md mx-auto"
                   />
                 </Card>
               </div>

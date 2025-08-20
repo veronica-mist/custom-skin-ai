@@ -31,14 +31,14 @@ const Contact = () => {
     // Create mailto link
     const subject = encodeURIComponent(formData.subject || 'TrueTone Inquiry');
     const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-    window.location.href = `mailto:support@truetone.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:truetonebeauty.mm@gmail.com?subject=${subject}&body=${body}`;
     
     toast.success('Email client opened! Your message is ready to send.');
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   const handlePhoneCall = () => {
-    window.location.href = 'tel:+9598123456789';
+    window.location.href = 'tel:+959812345678';
   };
 
   return (
@@ -88,10 +88,10 @@ const Contact = () => {
                         Send us a detailed message and we'll get back to you within 24 hours
                       </p>
                       <a 
-                        href="mailto:support@truetone.com"
+                        href="mailto:truetonebeauty.mm@gmail.com"
                         className="text-primary hover:text-primary-glow transition-smooth font-medium"
                       >
-                        support@truetone.com
+                        truetonebeauty.mm@gmail.com
                       </a>
                     </div>
                   </div>
@@ -107,12 +107,12 @@ const Contact = () => {
                       <p className="text-muted-foreground mb-3">
                         Speak directly with our beauty consultants for immediate assistance
                       </p>
-                      <button 
-                        onClick={handlePhoneCall}
+                      <a 
+                        href="tel:+959812345678"
                         className="text-primary hover:text-primary-glow transition-smooth font-medium"
                       >
-                        +95 9 812 345 6789
-                      </button>
+                        +95 9 812 345 678
+                      </a>
                     </div>
                   </div>
                 </Card>
@@ -125,11 +125,16 @@ const Contact = () => {
                     <div className="flex-1">
                       <h3 className="text-xl font-semibold text-primary mb-2">Location</h3>
                       <p className="text-muted-foreground mb-3">
-                        Based in Yangon, Myanmar, serving customers nationwide
+                        Based in Mandalay, Myanmar, serving customers nationwide
                       </p>
-                      <p className="text-primary font-medium">
-                        Yangon, Myanmar
-                      </p>
+                      <a 
+                        href="https://maps.google.com/?q=Mandalay,Myanmar" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary-glow transition-smooth font-medium"
+                      >
+                        Mandalay, Myanmar
+                      </a>
                     </div>
                   </div>
                 </Card>
