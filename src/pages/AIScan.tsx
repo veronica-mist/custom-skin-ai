@@ -9,6 +9,8 @@ const AIScan = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -20,14 +22,18 @@ const AIScan = () => {
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.onloadedmetadata = () => {
+          setIsCameraActive(true);
+        };
       }
     } catch (error) {
       console.error('Error accessing camera:', error);
+      alert('Unable to access camera. Please make sure you have granted camera permissions.');
     }
   };
 
   const captureImage = () => {
-    if (videoRef.current && canvasRef.current) {
+    if (videoRef.current && canvasRef.current && isCameraActive) {
       const canvas = canvasRef.current;
       const video = videoRef.current;
       canvas.width = video.videoWidth;
@@ -36,10 +42,22 @@ const AIScan = () => {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0);
       
+      // Convert canvas to blob and create image URL for preview
       canvas.toBlob((blob) => {
         setImageFile(blob);
+        const imageUrl = canvas.toDataURL('image/jpeg');
+        setCapturedImage(imageUrl);
+        
+        // Stop camera stream
+        const stream = video.srcObject;
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+          setIsCameraActive(false);
+        }
+        
         analyzeSkin(blob);
-      });
+      }, 'image/jpeg', 0.8);
     }
   };
 
@@ -153,7 +171,7 @@ const AIScan = () => {
                             size="lg" 
                             onClick={captureImage}
                             className="w-full"
-                            disabled={!videoRef.current?.srcObject}
+                            disabled={!isCameraActive}
                           >
                             <Scan className="h-5 w-5" />
                             Capture & Analyze
