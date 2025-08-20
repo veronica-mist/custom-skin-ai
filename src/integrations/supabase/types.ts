@@ -131,7 +131,6 @@ export type Database = {
           id: string | null
           rating: number | null
           review_text: string | null
-          updated_at: string | null
         }
         Insert: {
           created_at?: string | null
@@ -139,7 +138,6 @@ export type Database = {
           id?: string | null
           rating?: number | null
           review_text?: string | null
-          updated_at?: string | null
         }
         Update: {
           created_at?: string | null
@@ -147,7 +145,6 @@ export type Database = {
           id?: string | null
           rating?: number | null
           review_text?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
