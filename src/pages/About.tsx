@@ -59,7 +59,7 @@ const About = () => {
               <div className="relative">
                 <Card className="p-8 shadow-luxury gradient-luxury">
                   <img 
-                    src={trueToneLogoEnhanced} 
+                    src="/lovable-uploads/8c1280d2-3c43-479c-befa-b0b364f87fbd.png" 
                     alt="TrueTone logo - Revolutionizing inclusive beauty" 
                     className="w-full rounded-lg max-w-md mx-auto"
                   />
