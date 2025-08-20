@@ -274,7 +274,7 @@ const Shop = () => {
                   Safe and trusted delivery partner
                 </p>
                 <a 
-                  href="https://cdn.klink.cloud/royal_express_cx_agent/message/644c9068-2bb8-4220-bb33-b35bfa55785f/MDY-PriceList_1.pdf?response-content-disposition=attachment&Expires=95067225701&Key-Pair-Id=K2HIX5T4LSGPEG&Signature=LI2G7z2R5EZdfDlOnweTRcPZFZeiW8JZsGCdkfdR-xyMmXwC03Urs6ncXE-EFR~CwEp-0cu7b4E9BYHmSeeg2jNoLsQbNWRyPQvOhH0mqmO6Rv4IwocQ7j~--hG~Jg3Dp-cpX7RViarxOh~TtZmRRJfVBu1H2ytvh~DR37OWN7kF-dnw8LjXbiyTaCX2aPR5h9XqYhJdqHo8W12-xdxkWOd2UX3kOdvZ9jj56MnqfZ9svetwOVAX1aB~gefkeilSHW8qUV63U5SYsssE7VDQ-9bnoIqt3VQvBKTGZdEuyWQ2SiLLChZxrpvr2J9XCLbZSOlwuvfi9joI7jgJF-QL~A__"
+                  href="https://cdn.klink.cloud/royal_express_cx_agent/message/644c9068-2bb8-4220-bb33-b35bfa55785f/MDY-PriceList_1.pdf?response-content-disposition=attachment&Expires=95067225701&Key-Pair-Id=K2HIX5T4LSGPEG&Signature=LI2G7z2R5EZdfDlOnweTRcPZFZeiW8JZsGCdkfdR-xyMmXwC03Urs6ncXE-EFR~CwEp-0cu7b4E9BYHmSeeg2jNoLsQbNWRyPQvOhH0mqmO6Rv4IwocQ7j~--hG~Jg3Dp-cpX7RViarxOh~TtZmRRJfVBu1H2ytvh~DR37OWN7kF-QL~A__"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-primary hover:underline"
