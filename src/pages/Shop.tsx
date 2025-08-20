@@ -318,10 +318,10 @@ const Shop = () => {
                   Safe and trusted delivery partner
                 </p>
                 <button
-                  onClick={() => window.open('/delivery-rates.html', '_blank')}
+                  onClick={() => window.open('/payment-info.html', '_blank')}
                   className="text-sm text-primary hover:underline cursor-pointer"
                 >
-                  Check delivery rates for your location →
+                  📋 View complete payment & delivery information →
                 </button>
               </div>
 
