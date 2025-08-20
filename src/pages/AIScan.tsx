@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { Camera, Upload, Scan, Brain, CheckCircle, ArrowRight } from 'lucide-react';
+import { Camera, Upload, Scan, Brain, CheckCircle, ArrowRight, RotateCcw } from 'lucide-react';
 import { analyzeImage } from '@/utils/imageAnalysis';
 import aiScanBg from '@/assets/ai-scan-bg.jpg';
 
@@ -112,6 +112,22 @@ const AIScan = () => {
         setScanResult(result);
         setIsScanning(false);
       }, 2000);
+    }
+  };
+
+  const resetScan = () => {
+    setScanResult(null);
+    setImageFile(null);
+    setUploadedImageUrl(null);
+    setCapturedImage(null);
+    setIsScanning(false);
+    setIsCameraActive(false);
+    
+    // Stop any active camera stream
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
     }
   };
 
@@ -379,12 +395,23 @@ const AIScan = () => {
                 </div>
 
                 <div className="text-center space-y-4">
-                  <Link to="/shop" state={{ scanResult }}>
-                    <Button variant="hero" size="xl" className="hover-lift">
-                      Order Your Custom Foundation
-                      <ArrowRight className="h-5 w-5" />
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      onClick={resetScan}
+                      className="hover-lift"
+                    >
+                      <RotateCcw className="h-5 w-5" />
+                      Re-scan Face
                     </Button>
-                  </Link>
+                    <Link to="/shop" state={{ scanResult }}>
+                      <Button variant="hero" size="xl" className="hover-lift">
+                        Order Your Custom Foundation
+                        <ArrowRight className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Your analysis will be saved for easy reordering
                   </p>
