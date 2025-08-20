@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Mail, Phone, MapPin, Clock, MessageSquare, Send, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageSquare, Send, Facebook, Instagram, Twitter, Star } from 'lucide-react';
 import contactLuxuryBg from '@/assets/contact-luxury-bg.jpg';
 
 const Contact = () => {
@@ -13,11 +13,32 @@ const Contact = () => {
     message: ''
   });
 
+  const [reviewData, setReviewData] = useState({
+    customerName: '',
+    rating: 0,
+    review: ''
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleReviewChange = (e) => {
+    const { name, value } = e.target;
+    setReviewData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleRatingClick = (rating) => {
+    setReviewData(prev => ({
+      ...prev,
+      rating
     }));
   };
 
@@ -28,17 +49,33 @@ const Contact = () => {
       return;
     }
     
-    // Create mailto link
+    // Create Gmail compose link
     const subject = encodeURIComponent(formData.subject || 'TrueTone Inquiry');
     const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
-    window.location.href = `mailto:truetonebeauty.mm@gmail.com?subject=${subject}&body=${body}`;
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=truetonebeauty.mm@gmail.com&subject=${subject}&body=${body}`, '_blank');
     
-    toast.success('Email client opened! Your message is ready to send.');
+    toast.success('Gmail opened! Your message is ready to send.');
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   const handlePhoneCall = () => {
     window.location.href = 'tel:+959812345678';
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewData.customerName || !reviewData.review || reviewData.rating === 0) {
+      toast.error('Please fill in all review fields and select a rating');
+      return;
+    }
+    
+    // Create mailto link for review
+    const subject = encodeURIComponent('TrueTone Customer Review');
+    const body = encodeURIComponent(`Customer Review Submission:\n\nName: ${reviewData.customerName}\nRating: ${reviewData.rating}/5 stars\n\nReview:\n${reviewData.review}`);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=truetonebeauty.mm@gmail.com&subject=${subject}&body=${body}`, '_blank');
+    
+    toast.success('Review submitted! Thank you for your feedback.');
+    setReviewData({ customerName: '', rating: 0, review: '' });
   };
 
   return (
@@ -88,7 +125,9 @@ const Contact = () => {
                         Send us a detailed message and we'll get back to you within 24 hours
                       </p>
                       <a 
-                        href="mailto:truetonebeauty.mm@gmail.com"
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=truetonebeauty.mm@gmail.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-primary hover:text-primary-glow transition-smooth font-medium"
                       >
                         truetonebeauty.mm@gmail.com
@@ -128,12 +167,12 @@ const Contact = () => {
                         Based in Mandalay, Myanmar, serving customers nationwide
                       </p>
                       <a 
-                        href="https://maps.google.com/?q=Mandalay,Myanmar" 
+                        href="https://www.google.com/maps/search/?api=1&query=Mandalay,Myanmar" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-primary hover:text-primary-glow transition-smooth font-medium"
                       >
-                        Mandalay, Myanmar
+                        📍 View on Google Maps
                       </a>
                     </div>
                   </div>
@@ -258,6 +297,85 @@ const Contact = () => {
                       <Twitter className="h-6 w-6 text-white" />
                     </a>
                   </div>
+                </div>
+              </Card>
+              {/* Customer Review Section */}
+              <Card className="p-8 shadow-luxury mt-8">
+                <div className="space-y-6">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 mx-auto gradient-primary rounded-full flex items-center justify-center">
+                      <Star className="h-8 w-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-primary">Leave a Review</h3>
+                    <p className="text-muted-foreground">
+                      Share your experience with TrueTone's custom foundation service
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleReviewSubmit} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-primary mb-2">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="customerName"
+                        value={reviewData.customerName}
+                        onChange={handleReviewChange}
+                        className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
+                        placeholder="Enter your name"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-primary mb-2">
+                        Rating *
+                      </label>
+                      <div className="flex space-x-1 mb-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => handleRatingClick(star)}
+                            className={`p-1 transition-smooth ${
+                              star <= reviewData.rating 
+                                ? 'text-yellow-400 hover:text-yellow-500' 
+                                : 'text-gray-300 hover:text-yellow-300'
+                            }`}
+                          >
+                            <Star 
+                              className="h-8 w-8" 
+                              fill={star <= reviewData.rating ? 'currentColor' : 'none'}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Click to rate your experience (1-5 stars)
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-primary mb-2">
+                        Your Review *
+                      </label>
+                      <textarea
+                        name="review"
+                        value={reviewData.review}
+                        onChange={handleReviewChange}
+                        rows={6}
+                        className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth resize-none"
+                        placeholder="Tell us about your experience with TrueTone's custom foundation matching service..."
+                        required
+                      />
+                    </div>
+
+                    <Button type="submit" variant="hero" size="lg" className="w-full">
+                      <Star className="h-5 w-5" />
+                      Submit Review
+                    </Button>
+                  </form>
                 </div>
               </Card>
             </div>
