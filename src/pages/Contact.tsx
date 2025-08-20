@@ -167,7 +167,7 @@ const Contact = () => {
                         Based in Mandalay, Myanmar, serving customers nationwide
                       </p>
                       <a 
-                        href="https://www.google.com/maps/search/?api=1&query=Mandalay,Myanmar" 
+                        href="https://www.google.com/maps/place/Mandalay/@21.9403394,95.9934223,12z/data=!3m1!4b1!4m6!3m5!1s0x30cb6d23f0d27411:0x24146be01e4e5646!8m2!3d21.9588282!4d96.0891032!16zL20vMDI0Ymc3?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-primary hover:text-primary-glow transition-smooth font-medium"
