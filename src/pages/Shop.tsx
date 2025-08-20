@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { ShoppingCart, Package, Truck, CreditCard, Building2, Clock, CheckCircle, Star } from 'lucide-react';
+import { ShoppingCart, Package, Truck, CreditCard, Building2, Clock, CheckCircle, Star, Upload, Camera } from 'lucide-react';
 import shopBg from '@/assets/shop-bg.jpg';
 import foundationBottles from '@/assets/foundation-bottles.jpg';
 
@@ -17,7 +17,9 @@ const Shop = () => {
   const [selectedAdditives, setSelectedAdditives] = useState([]);
   const [showDeliveryInfo, setShowDeliveryInfo] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [showTransferReceipt, setShowTransferReceipt] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({ address: '', phone: '' });
+  const [transferReceipt, setTransferReceipt] = useState(null);
 
   const prices = {
     matte: 250000,
@@ -64,15 +66,46 @@ const Shop = () => {
       // Open KPay app or website
       window.open('https://kpay.com.mm/', '_blank');
       toast.success('Opening KPay for secure bank transfer. Complete your payment there.');
+      setShowPayment(false);
+      setShowTransferReceipt(true);
     } else if (method === 'Yoma Bank') {
       // Open Yoma mobile banking
       window.open('https://yomabank.com/digital-banking', '_blank');
       toast.success('Opening Yoma Mobile Banking. Complete your payment there.');
+      setShowPayment(false);
+      setShowTransferReceipt(true);
     } else if (method === 'Credit Card') {
       // Open credit card payment processor
       window.open('https://stripe.com', '_blank');
       toast.success('Opening secure credit card payment. Complete your transaction there.');
     }
+  };
+
+  const handleReceiptUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setTransferReceipt(e.target.result);
+        toast.success('Transfer receipt uploaded successfully!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmitReceipt = () => {
+    if (!transferReceipt) {
+      toast.error('Please upload your transfer receipt');
+      return;
+    }
+    toast.success('Thank you! Your order has been submitted and is being processed.');
+    setShowTransferReceipt(false);
+    // Reset all states
+    setSelectedFinish('matte');
+    setSelectedCoverage('medium');
+    setSelectedAdditives([]);
+    setCustomerInfo({ address: '', phone: '' });
+    setTransferReceipt(null);
   };
 
   return (
@@ -284,14 +317,12 @@ const Shop = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   Safe and trusted delivery partner
                 </p>
-                <a 
-                  href="https://cdn.klink.cloud/royal_express_cx_agent/message/644c9068-2bb8-4220-bb33-b35bfa55785f/MDY-PriceList_1.pdf?response-content-disposition=attachment&Expires=95067225701&Key-Pair-Id=K2HIX5T4LSGPEG&Signature=LI2G7z2R5EZdfDlOnweTRcPZFZeiW8JZsGCdkfdR-xyMmXwC03Urs6ncXE-EFR~CwEp-0cu7b4E9BYHmSeeg2jNoLsQbNWRyPQvOhH0mqmO6Rv4IwocQ7j~--hG~Jg3Dp-cpX7RViarxOh~TtZmRRJfVBu1H2ytvh~DR37OWN7kF-QL~A__"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline"
+                <button
+                  onClick={() => window.open('/delivery-rates.html', '_blank')}
+                  className="text-sm text-primary hover:underline cursor-pointer"
                 >
                   Check delivery rates for your location →
-                </a>
+                </button>
               </div>
 
               <div className="space-y-4">
@@ -397,6 +428,100 @@ const Shop = () => {
               >
                 Back
               </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Transfer Receipt Upload Modal */}
+      {showTransferReceipt && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-md w-full p-8">
+            <div className="space-y-6">
+              <div className="text-center">
+                <Upload className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-primary">Upload Transfer Receipt</h3>
+                <p className="text-muted-foreground">Please upload your payment receipt to confirm your order</p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                  {transferReceipt ? (
+                    <div className="space-y-4">
+                      <img 
+                        src={transferReceipt} 
+                        alt="Transfer Receipt" 
+                        className="max-w-full h-48 object-contain mx-auto rounded-lg"
+                      />
+                      <p className="text-sm text-muted-foreground">Receipt uploaded successfully!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <Camera className="h-12 w-12 text-muted-foreground mx-auto" />
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleReceiptUpload}
+                          className="hidden"
+                          id="receipt-upload"
+                        />
+                        <label
+                          htmlFor="receipt-upload"
+                          className="inline-flex items-center justify-center px-4 py-2 bg-primary text-primary-foreground rounded-lg cursor-pointer hover:bg-primary/90 transition-smooth"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Choose Receipt Image
+                        </label>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Supported formats: JPG, PNG, GIF
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {transferReceipt && (
+                  <div className="bg-muted/50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Order Summary:</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span>Total Amount:</span>
+                        <span className="font-semibold">{calculateTotal().toLocaleString()} MMK</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Delivery Address:</span>
+                        <span className="text-right max-w-32 truncate">{customerInfo.address}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Phone:</span>
+                        <span>{customerInfo.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex space-x-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowTransferReceipt(false);
+                    setShowPayment(true);
+                  }}
+                  className="flex-1"
+                >
+                  Back
+                </Button>
+                <Button 
+                  variant="hero" 
+                  onClick={handleSubmitReceipt}
+                  className="flex-1"
+                  disabled={!transferReceipt}
+                >
+                  Submit Order
+                </Button>
+              </div>
             </div>
           </Card>
         </div>

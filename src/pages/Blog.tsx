@@ -1,11 +1,29 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Calendar, User, ArrowRight, Palette, Camera, Sparkles } from 'lucide-react';
 import blogLuxuryBg from '@/assets/blog-luxury-bg.jpg';
+import blogBeautyTips from '@/assets/blog-beauty-tips.jpg';
+import blogTechnology from '@/assets/blog-technology.jpg';
+import blogTutorials from '@/assets/blog-tutorials.jpg';
+import blogIndustry from '@/assets/blog-industry.jpg';
+import blogSkincare from '@/assets/blog-skincare.jpg';
+import blogPhotography from '@/assets/blog-photography.jpg';
 
 const Blog = () => {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categoryImages = {
+    "Beauty Tips": blogBeautyTips,
+    "Technology": blogTechnology,
+    "Tutorials": blogTutorials,
+    "Industry Insights": blogIndustry,
+    "Skincare": blogSkincare,
+    "Photography": blogPhotography
+  };
+
   const blogPosts = [
     {
       id: 1,
@@ -15,7 +33,7 @@ const Blog = () => {
       date: "2024-01-15",
       category: "Beauty Tips",
       readTime: "5 min read",
-      image: "/lovable-uploads/e2942bc5-ca06-4a0e-8224-190702092e5a.png"
+      image: blogBeautyTips
     },
     {
       id: 2,
@@ -25,7 +43,7 @@ const Blog = () => {
       date: "2024-01-10",
       category: "Technology",
       readTime: "8 min read",
-      image: "/lovable-uploads/4513518d-12ca-431a-888a-4f209eec3353.png"
+      image: blogTechnology
     },
     {
       id: 3,
@@ -35,7 +53,7 @@ const Blog = () => {
       date: "2024-01-05",
       category: "Tutorials",
       readTime: "6 min read",
-      image: "/lovable-uploads/e2942bc5-ca06-4a0e-8224-190702092e5a.png"
+      image: blogTutorials
     },
     {
       id: 4,
@@ -45,7 +63,7 @@ const Blog = () => {
       date: "2024-01-01",
       category: "Industry Insights",
       readTime: "7 min read",
-      image: "/lovable-uploads/4513518d-12ca-431a-888a-4f209eec3353.png"
+      image: blogIndustry
     },
     {
       id: 5,
@@ -55,7 +73,7 @@ const Blog = () => {
       date: "2023-12-28",
       category: "Skincare",
       readTime: "4 min read",
-      image: "/lovable-uploads/e2942bc5-ca06-4a0e-8224-190702092e5a.png"
+      image: blogSkincare
     },
     {
       id: 6,
@@ -65,11 +83,15 @@ const Blog = () => {
       date: "2023-12-25",
       category: "Photography",
       readTime: "5 min read",
-      image: "/lovable-uploads/e2942bc5-ca06-4a0e-8224-190702092e5a.png"
+      image: blogPhotography
     }
   ];
 
   const categories = ["All", "Beauty Tips", "Technology", "Tutorials", "Industry Insights", "Skincare", "Photography"];
+
+  const filteredPosts = selectedCategory === "All" 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === selectedCategory);
 
   return (
     <div className="relative">
@@ -142,9 +164,10 @@ const Blog = () => {
               {categories.map((category) => (
                 <Button
                   key={category}
-                  variant={category === "All" ? "hero" : "outline"}
+                  variant={selectedCategory === category ? "hero" : "outline"}
                   size="sm"
                   className="hover-lift"
+                  onClick={() => setSelectedCategory(category)}
                 >
                   {category}
                 </Button>
@@ -153,7 +176,7 @@ const Blog = () => {
 
             {/* Blog Posts Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post) => (
+              {filteredPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden shadow-card hover-lift transition-smooth">
                   <div className="aspect-video bg-muted relative overflow-hidden">
                     <img 
