@@ -5,12 +5,14 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { ShoppingCart, Package, Truck, CreditCard, Building2, Clock, CheckCircle, Star, Upload, Camera } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 import shopBg from '@/assets/shop-bg.jpg';
 import foundationBottles from '@/assets/foundation-bottles.jpg';
 
 const Shop = () => {
   const location = useLocation();
   const scanResult = location.state?.scanResult;
+  const { addItem } = useCart();
   
   const [selectedFinish, setSelectedFinish] = useState('matte');
   const [selectedCoverage, setSelectedCoverage] = useState('medium');
@@ -49,7 +51,24 @@ const Shop = () => {
   };
 
   const handleOrderNow = () => {
-    setShowDeliveryInfo(true);
+    // Add to cart instead of going to delivery modal
+    const cartItem = {
+      productName: 'Custom Foundation',
+      productDetails: {
+        finish: selectedFinish,
+        coverage: selectedCoverage,
+        additives: selectedAdditives
+      },
+      quantity: 1,
+      price: calculateTotal() / 1000 // Convert to USD for easier display
+    };
+    
+    addItem(cartItem);
+    
+    // Reset selections for next order
+    setSelectedFinish('matte');
+    setSelectedCoverage('medium');
+    setSelectedAdditives([]);
   };
 
   const handleDeliveryConfirm = () => {

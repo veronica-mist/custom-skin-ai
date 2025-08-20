@@ -1,12 +1,19 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/contexts/CartContext';
+import { supabase } from '@/integrations/supabase/client';
+import type { User } from '@supabase/supabase-js';
+import { toast } from 'sonner';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { totalItems, setIsCartOpen } = useCart();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -15,10 +22,36 @@ const Header = () => {
     { name: 'Shop', href: '/shop' },
     { name: 'About Us', href: '/about' },
     { name: 'Blog', href: '/blog' },
+    { name: 'Reviews', href: '/reviews' },
     { name: 'Contact', href: '/contact' },
   ];
 
+  useEffect(() => {
+    // Get current user
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch (error) {
+      toast.error('Failed to log out');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -53,15 +86,39 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative"
+              onClick={() => setIsCartOpen(true)}
+            >
               <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Button>
-            <Button variant="outline" size="sm">
-              Login
-            </Button>
-            <Button variant="hero" size="sm">
-              Sign Up
-            </Button>
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-muted-foreground">
+                  Welcome back!
+                </span>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+                  Login
+                </Button>
+                <Button variant="hero" size="sm" onClick={() => navigate('/auth')}>
+                  Sign Up
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -93,12 +150,35 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="outline" size="sm">
-                  Login
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="relative justify-start"
+                  onClick={() => setIsCartOpen(true)}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Cart
+                  {totalItems > 0 && (
+                    <span className="ml-auto bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
                 </Button>
-                <Button variant="hero" size="sm">
-                  Sign Up
-                </Button>
+                {user ? (
+                  <Button variant="outline" size="sm" onClick={handleLogout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/auth')}>
+                      Login
+                    </Button>
+                    <Button variant="hero" size="sm" onClick={() => navigate('/auth')}>
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
