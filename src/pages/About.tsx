@@ -6,7 +6,7 @@ import aboutLuxuryBg from '@/assets/about-luxury-bg.jpg';
 import teamAiLead from '@/assets/team-ai-lead.jpg';
 import teamBeautyExpert from '@/assets/team-beauty-expert.jpg';
 import teamUxDesigner from '@/assets/team-ux-designer.jpg';
-import trueToneLogoHd from '@/assets/truetone-logo-hd.png';
+import trueToneLogoEnhanced from '@/assets/truetone-logo-enhanced.png';
 
 const About = () => {
   return (
@@ -59,7 +59,7 @@ const About = () => {
               <div className="relative">
                 <Card className="p-8 shadow-luxury gradient-luxury">
                   <img 
-                    src={trueToneLogoHd} 
+                    src={trueToneLogoEnhanced} 
                     alt="TrueTone logo - Revolutionizing inclusive beauty" 
                     className="w-full rounded-lg max-w-md mx-auto"
                   />
