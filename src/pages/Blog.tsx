@@ -215,18 +215,12 @@ const Blog = () => {
                       <span className="text-sm text-muted-foreground">
                         {post.readTime}
                       </span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-primary hover:text-primary"
-                        onClick={() => {
-                          setSelectedCategory(post.category);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                      >
-                        Read More
-                        <ArrowRight className="h-4 w-4 ml-1" />
-                      </Button>
+                      <Link to={`/blog/${post.id}`}>
+                        <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
+                          Read More
+                          <ArrowRight className="h-4 w-4 ml-1" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </Card>
