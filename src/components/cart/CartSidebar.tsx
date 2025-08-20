@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Card } from '@/components/ui/card';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
+import CheckoutFlow from '@/components/checkout/CheckoutFlow';
 
 const CartSidebar = () => {
   const { 
@@ -15,6 +17,8 @@ const CartSidebar = () => {
     isCartOpen, 
     setIsCartOpen 
   } = useCart();
+  
+  const [showCheckout, setShowCheckout] = useState(false);
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -117,7 +121,12 @@ const CartSidebar = () => {
             </div>
 
             <div className="space-y-2">
-              <Button variant="hero" size="lg" className="w-full">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="w-full"
+                onClick={() => setShowCheckout(true)}
+              >
                 Proceed to Checkout
               </Button>
               <Button 
@@ -132,6 +141,11 @@ const CartSidebar = () => {
           </div>
         )}
       </SheetContent>
+      
+      <CheckoutFlow 
+        isOpen={showCheckout} 
+        onClose={() => setShowCheckout(false)} 
+      />
     </Sheet>
   );
 };
