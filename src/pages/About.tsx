@@ -3,6 +3,9 @@ import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Heart, Users, Award, Target, ArrowRight } from 'lucide-react';
 import aboutLuxuryBg from '@/assets/about-luxury-bg.jpg';
+import teamAiLead from '@/assets/team-ai-lead.jpg';
+import teamBeautyExpert from '@/assets/team-beauty-expert.jpg';
+import teamUxDesigner from '@/assets/team-ux-designer.jpg';
 
 const About = () => {
   return (
@@ -133,20 +136,27 @@ const About = () => {
               {[
                 {
                   role: "AI Technology Lead",
-                  description: "Developing cutting-edge skin analysis algorithms that work for all skin tones"
+                  description: "Developing cutting-edge skin analysis algorithms that work for all skin tones",
+                  image: teamAiLead
                 },
                 {
                   role: "Beauty Formulation Expert", 
-                  description: "Creating custom foundation formulas with premium ingredients and perfect color matching"
+                  description: "Creating custom foundation formulas with premium ingredients and perfect color matching",
+                  image: teamBeautyExpert
                 },
                 {
                   role: "User Experience Designer",
-                  description: "Designing inclusive and accessible beauty technology for everyone"
+                  description: "Designing inclusive and accessible beauty technology for everyone",
+                  image: teamUxDesigner
                 }
               ].map((member, index) => (
                 <Card key={index} className="p-8 text-center shadow-card hover-lift">
-                  <div className="w-24 h-24 mx-auto mb-6 gradient-primary rounded-full flex items-center justify-center">
-                    <Users className="h-12 w-12 text-white" />
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden">
+                    <img 
+                      src={member.image} 
+                      alt={`${member.role} professional headshot`}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-primary mb-3">{member.role}</h3>
                   <p className="text-muted-foreground">{member.description}</p>

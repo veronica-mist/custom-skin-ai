@@ -238,35 +238,6 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Newsletter Signup */}
-      <section className="py-20 gradient-luxury">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary">
-              Stay Updated
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Get the latest beauty tips, tutorials, and technology insights delivered to your inbox
-            </p>
-            
-            <Card className="p-8 bg-card/80 backdrop-blur-sm max-w-2xl mx-auto">
-              <div className="flex flex-col md:flex-row gap-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-1 p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <Button variant="hero" size="lg">
-                  Subscribe
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground mt-4">
-                Join 10,000+ beauty enthusiasts. Unsubscribe anytime.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Popular Articles */}
       <section className="py-20 bg-primary text-primary-foreground">
