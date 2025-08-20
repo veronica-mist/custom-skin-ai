@@ -124,30 +124,7 @@ export type Database = {
       }
     }
     Views: {
-      public_reviews: {
-        Row: {
-          created_at: string | null
-          customer_name: string | null
-          id: string | null
-          rating: number | null
-          review_text: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          customer_name?: string | null
-          id?: string | null
-          rating?: number | null
-          review_text?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          customer_name?: string | null
-          id?: string | null
-          rating?: number | null
-          review_text?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
