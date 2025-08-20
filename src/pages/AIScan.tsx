@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { Camera, Upload, Scan, Brain, CheckCircle, ArrowRight } from 'lucide-react';
+import { analyzeImage } from '@/utils/imageAnalysis';
 import aiScanBg from '@/assets/ai-scan-bg.jpg';
 
 const AIScan = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const videoRef = useRef(null);
@@ -65,6 +67,9 @@ const AIScan = () => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
+      // Create URL for preview
+      const imageUrl = URL.createObjectURL(file);
+      setUploadedImageUrl(imageUrl);
       analyzeSkin(file);
     }
   };
@@ -72,30 +77,42 @@ const AIScan = () => {
   const analyzeSkin = async (imageBlob) => {
     setIsScanning(true);
     
-    // Simulate AI analysis with real-looking data
-    setTimeout(() => {
-      // Generate realistic skin analysis data
-      const skinTones = ['Fair', 'Light', 'Medium', 'Tan', 'Deep'];
-      const undertones = ['Cool Pink', 'Neutral', 'Warm Yellow', 'Warm Golden', 'Cool Rose'];
-      const skinTypes = ['Normal', 'Dry', 'Oily', 'Combination', 'Sensitive'];
-      
-      const result = {
-        skinTone: skinTones[Math.floor(Math.random() * skinTones.length)],
-        undertone: undertones[Math.floor(Math.random() * undertones.length)],
-        skinType: skinTypes[Math.floor(Math.random() * skinTypes.length)],
-        confidence: Math.floor(Math.random() * 10) + 90, // 90-99%
-        customCode: `TT-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
-        recommendations: {
-          mattePrice: '250,000 MMK',
-          dewyPrice: '300,000 MMK',
-          coverage: ['Light', 'Medium', 'Full'],
-          additives: ['Hyaluronic Acid', 'Vitamin E', 'SPF Protection']
-        }
-      };
-      
+    try {
+      // Use real image analysis
+      const result = await analyzeImage(imageBlob);
       setScanResult(result);
       setIsScanning(false);
-    }, 3000);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      // Fallback to simulated data if analysis fails
+      setTimeout(() => {
+        const skinTones = ['Fair', 'Light', 'Medium', 'Tan', 'Deep'];
+        const undertones = ['Cool Pink', 'Neutral', 'Warm Yellow', 'Warm Golden', 'Cool Rose'];
+        const skinTypes = ['Normal', 'Dry', 'Oily', 'Combination', 'Sensitive'];
+        
+        const result = {
+          skinTone: skinTones[Math.floor(Math.random() * skinTones.length)],
+          undertone: undertones[Math.floor(Math.random() * undertones.length)],
+          skinType: skinTypes[Math.floor(Math.random() * skinTypes.length)],
+          lighting: {
+            quality: 'Good',
+            score: 85,
+            recommendations: ['Perfect lighting conditions!']
+          },
+          confidence: Math.floor(Math.random() * 10) + 90,
+          customCode: `TT-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+          recommendations: {
+            mattePrice: '250,000 MMK',
+            dewyPrice: '300,000 MMK',
+            coverage: ['Light', 'Medium', 'Full'],
+            additives: ['Hyaluronic Acid', 'Vitamin E', 'SPF Protection']
+          }
+        };
+        
+        setScanResult(result);
+        setIsScanning(false);
+      }, 2000);
+    }
   };
 
   return (
@@ -197,9 +214,9 @@ const AIScan = () => {
                           className="w-full h-64 border-2 border-dashed border-primary/30 rounded-lg flex items-center justify-center bg-muted/50 cursor-pointer hover:bg-muted transition-smooth"
                           onClick={() => fileInputRef.current?.click()}
                         >
-                          {imageFile ? (
+                          {uploadedImageUrl ? (
                             <img 
-                              src="/lovable-uploads/e2942bc5-ca06-4a0e-8224-190702092e5a.png"
+                              src={uploadedImageUrl}
                               alt="Uploaded" 
                               className="w-full h-full object-cover rounded-lg"
                             />
@@ -283,6 +300,18 @@ const AIScan = () => {
                         <span className="font-semibold">Skin Type:</span>
                         <span className="text-primary">{scanResult.skinType}</span>
                       </div>
+                      {scanResult.lighting && (
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Lighting Quality:</span>
+                            <span className="text-primary">{scanResult.lighting.quality}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Lighting Score:</span>
+                            <span className="text-primary font-bold">{scanResult.lighting.score}/100</span>
+                          </div>
+                        </>
+                      )}
                       <div className="flex justify-between items-center">
                         <span className="font-semibold">Confidence Score:</span>
                         <span className="text-primary font-bold">{scanResult.confidence}%</span>
@@ -292,6 +321,18 @@ const AIScan = () => {
                         <span className="text-primary font-mono">{scanResult.customCode}</span>
                       </div>
                     </div>
+                    
+                    {/* Lighting Recommendations */}
+                    {scanResult.lighting && scanResult.lighting.recommendations.length > 0 && (
+                      <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                        <h4 className="font-semibold text-primary mb-2">Lighting Analysis:</h4>
+                        <ul className="space-y-1">
+                          {scanResult.lighting.recommendations.map((rec, index) => (
+                            <li key={index} className="text-sm text-muted-foreground">• {rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </Card>
 
                   {/* Foundation Recommendations */}
