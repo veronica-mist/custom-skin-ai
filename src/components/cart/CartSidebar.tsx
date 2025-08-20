@@ -52,7 +52,7 @@ const CartSidebar = () => {
                       <div className="flex-1">
                         <h4 className="font-medium text-primary">{item.productName}</h4>
                         <p className="text-sm text-muted-foreground mt-1">
-                          ${item.price.toFixed(2)} each
+                          {(item.price * 1000).toLocaleString()} MMK each
                         </p>
                       </div>
                       <Button
@@ -101,7 +101,7 @@ const CartSidebar = () => {
                         </Button>
                       </div>
                       <div className="font-semibold">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {(item.price * item.quantity * 1000).toLocaleString()} MMK
                       </div>
                     </div>
                   </div>
@@ -116,7 +116,7 @@ const CartSidebar = () => {
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold">Total:</span>
               <span className="text-xl font-bold text-primary">
-                ${totalPrice.toFixed(2)}
+                {(totalPrice * 1000).toLocaleString()} MMK
               </span>
             </div>
 

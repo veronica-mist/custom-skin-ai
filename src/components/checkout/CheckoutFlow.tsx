@@ -134,7 +134,7 @@ const CheckoutFlow = ({ isOpen, onClose }: CheckoutFlowProps) => {
             <div className="text-center">
               <CreditCard className="h-12 w-12 text-primary mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-primary">Choose Payment Method</h3>
-              <p className="text-muted-foreground">Total: ${totalPrice.toFixed(2)}</p>
+              <p className="text-muted-foreground">Total: {(totalPrice * 1000).toLocaleString()} MMK</p>
             </div>
 
             <div className="space-y-4">
