@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/0684ee87-94de-4cb5-b16a-bdbf68a2dc4d
+**URL**: https://preview--custom-skin-ai.lovable.app/
 
 ## How can I edit this code?
 
