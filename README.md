@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://custom-skin-ai.lovable.app/
+**URL**: https://preview--custom-skin-ai.lovable.app/
 
 ## How can I edit this code?
 
